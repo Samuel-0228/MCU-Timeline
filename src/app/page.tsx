@@ -83,10 +83,11 @@ export default function Home() {
     }
   };
 
-  // Reset Perspective Handler for re-experiencing the intro screen
+  // Reset Perspective Handler for re-experiencing the intro screen & poll revoting
   const handleResetPerspective = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("mcu_user_perspective");
+      // Note: we keep hero_choice so they can see the live results consensus screen, or they can click RESET CHOICE in the poll!
     }
     setUserPerspective(null);
     setShowIntro(true);
@@ -141,7 +142,7 @@ export default function Home() {
       {showIntro && (
         <IntroScreen
           onComplete={(path) => {
-            setUserPerspective(path);
+            setUserPerspective(path === "captain" ? "cap" : "ironman");
             setShowIntro(false);
           }}
         />
@@ -187,10 +188,10 @@ export default function Home() {
             <button
               onClick={handleResetPerspective}
               className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-neutral-900 border border-neutral-700 hover:border-white text-neutral-400 hover:text-white text-xs font-bold tracking-widest uppercase transition-all duration-300 active:scale-95 cursor-pointer rounded-none"
-              title="Reset choice and experience the immersive intro screen again"
+              title="View global poll consensus and change perspective"
             >
               <RotateCcw className="w-3.5 h-3.5 text-white" />
-              <span>CHANGE PERSPECTIVE</span>
+              <span>VIEW GLOBAL POLL / CHANGE PERSPECTIVE</span>
             </button>
           </div>
         )}

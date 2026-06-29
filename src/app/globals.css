@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+
+  .dark {
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  letter-spacing: -0.01em;
+}
+
+/* Minimalist monochrome scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 3px;
+  border: 1px solid #171717;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #525252;
+}
+
+/* Utilities for glowing and chamfered aesthetics */
+.glow-border {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.glow-border:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+/* Cinematic Intro Screen Animations */
+@keyframes fadeInCinematic {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ambientPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ambientFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+}
+
+.animate-fadeInCinematic {
+  animation: fadeInCinematic 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-ambientPulse {
+  animation: ambientPulse 8s ease-in-out infinite;
+}
+
+.animate-ambientFloat {
+  animation: ambientFloat 12s ease-in-out infinite;
+}

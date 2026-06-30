@@ -3,7 +3,22 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { TimelineEntry } from "../data/mcuTimeline";
-import { Calendar, ChevronDown, ChevronUp, Check, Play, ExternalLink, Download } from "lucide-react";
+import {
+  BadgeCheck,
+  Calendar,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Circle,
+  Download,
+  ExternalLink,
+  Film,
+  Hexagon,
+  Play,
+  Shield,
+  Sparkle,
+  Star,
+} from "lucide-react";
 
 interface MovieCardProps {
   movie: TimelineEntry;
@@ -11,6 +26,8 @@ interface MovieCardProps {
   onToggleWatched: (id: string) => void;
   onMouseEnter?: () => void;
 }
+
+const previewIcons = [Shield, Star, Circle, Hexagon, Sparkle, BadgeCheck];
 
 export default function MovieCard({
   movie,
@@ -24,179 +41,143 @@ export default function MovieCard({
   return (
     <article
       onMouseEnter={onMouseEnter}
-      className="w-full bg-[#050505] border border-neutral-800 hover:border-neutral-500 rounded-none p-6 sm:p-8 transition-all duration-300 shadow-2xl relative z-10 group"
+      className="group flex h-full flex-col rounded-lg border border-[#e5e7eb] bg-white p-4 transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
     >
-      {/* Background Subtle Shift Header Line */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-neutral-800 group-hover:bg-white transition-colors duration-300" />
+      <div className="grid grid-cols-3 gap-2 rounded-md border border-[#eeeeee] bg-neutral-50 p-3">
+        {previewIcons.map((Icon, index) => (
+          <div
+            key={`${movie.id}-${index}`}
+            className={`flex aspect-square items-center justify-center rounded-md border ${
+              index === 0
+                ? "border-lime-300 bg-lime-300 text-neutral-950"
+                : index === 4
+                  ? "border-neutral-900 bg-neutral-950 text-white"
+                  : "border-[#e5e7eb] bg-white text-neutral-600"
+            }`}
+          >
+            <Icon className={`h-5 w-5 ${index === 2 ? "fill-current opacity-80" : ""}`} strokeWidth={index === 5 ? 2.8 : 1.8} />
+          </div>
+        ))}
+      </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start pt-2">
-        
-        {/* Left Column: Embedded YouTube Video / Thumbnail */}
-        <div className="w-full lg:w-5/12 aspect-video bg-neutral-900 border border-neutral-800 relative flex-shrink-0 shadow-xl overflow-hidden rounded-none">
+      <div className="mt-4 flex items-start justify-between gap-3">
+        <div>
+          <div className="flex flex-wrap items-center gap-2 text-[11px] font-black uppercase text-neutral-500">
+            <span className="inline-flex items-center gap-1">
+              <Calendar className="h-3.5 w-3.5 text-lime-500" />
+              {movie.chronologicalYear}
+            </span>
+            <span>{movie.phase}</span>
+          </div>
+          <h3 className="mt-2 text-lg font-black leading-tight text-neutral-950">{movie.title}</h3>
+        </div>
+        <button
+          onClick={() => onToggleWatched(movie.id)}
+          className={`shrink-0 rounded-full border p-2 transition ${
+            isWatched
+              ? "border-lime-300 bg-lime-300 text-neutral-950"
+              : "border-[#e5e7eb] bg-white text-neutral-400 hover:border-neutral-950 hover:text-neutral-950"
+          }`}
+          title={isWatched ? "Marked watched" : "Mark watched"}
+        >
+          <Check className="h-4 w-4" strokeWidth={3} />
+        </button>
+      </div>
+
+      <p className="mt-3 line-clamp-4 text-sm leading-6 text-neutral-600">{movie.summary}</p>
+
+      <div className="mt-4 overflow-hidden rounded-md border border-[#eeeeee] bg-neutral-100">
+        <div className="relative aspect-video">
           {!isVideoLoaded ? (
-            <div
+            <button
               onClick={() => setIsVideoLoaded(true)}
-              className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 group/video cursor-pointer"
+              className="absolute inset-0 flex w-full items-center justify-center overflow-hidden bg-neutral-950 text-white"
             >
-              {/* Fallback YouTube High Quality Thumbnail using Next Image */}
               <Image
                 src={`https://img.youtube.com/vi/${movie.youtubeEmbedId}/hqdefault.jpg`}
                 alt={movie.title}
                 fill
                 unoptimized
-                className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover/video:opacity-60 transition-opacity duration-300"
+                className="object-cover opacity-70 transition group-hover:scale-105"
               />
-              <div className="relative z-10 p-4 bg-black border border-white text-white rounded-none flex items-center gap-2 group-hover/video:scale-105 transition-transform duration-300 shadow-lg">
-                <Play className="w-4 h-4 fill-current text-white" />
-                <span className="text-xs font-bold tracking-widest uppercase">
-                  INITIALIZE RECAP //
-                </span>
-              </div>
-              <span className="relative z-10 text-[10px] text-neutral-400 font-bold tracking-widest uppercase mt-3 bg-black/80 px-2 py-1 border border-neutral-800">
-                OFFICIAL SYSTEM LOG • {movie.releaseYear}
+              <span className="relative z-10 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-black text-neutral-950 shadow-sm">
+                <Play className="h-4 w-4 fill-current" />
+                Play trailer
               </span>
-            </div>
+            </button>
           ) : (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${movie.youtubeEmbedId}?autoplay=1&modestbranding=1&rel=0`}
               title={movie.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              className="absolute inset-0 w-full h-full border-0"
+              className="absolute inset-0 h-full w-full border-0"
             />
           )}
         </div>
+      </div>
 
-        {/* Right Column: Console Details & Summary */}
-        <div className="flex-1 flex flex-col justify-between w-full space-y-6">
-          
-          {/* Top Meta Header */}
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-xs font-black tracking-widest text-white bg-neutral-900 border border-neutral-700 px-3 py-1 uppercase rounded-none">
-                <Calendar className="w-3.5 h-3.5 text-white" />
-                <span>SYS YEAR: {movie.chronologicalYear}</span>
-              </div>
-
-              <div className="text-xs font-black text-neutral-400 tracking-widest uppercase">
-                {movie.phase} {"//"} RELEASED {movie.releaseYear}
-              </div>
-            </div>
-
-            {/* Bold Uppercase Heading */}
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">
-              {movie.title}
-            </h2>
-
-            {/* Concise Compact Body Text */}
-            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-normal tracking-wide">
-              {movie.summary}
-            </p>
+      {isExpanded && (
+        <div className="mt-4 space-y-4 border-t border-[#eeeeee] pt-4">
+          <div>
+            <h4 className="mb-2 flex items-center gap-2 text-xs font-black uppercase text-neutral-950">
+              <Film className="h-4 w-4 text-lime-500" />
+              Key universe events
+            </h4>
+            <ul className="space-y-2 text-sm text-neutral-600">
+              {movie.keyEvents.map((event) => (
+                <li key={event} className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-lime-500" />
+                  <span>{event}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Collapsible Key Events & Characters Section */}
-          {isExpanded && (
-            <div className="pt-6 border-t border-neutral-800 space-y-6 animate-fadeIn">
-              
-              {/* Key Timeline Events */}
-              <div className="space-y-3">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-white rounded-none" />
-                  KEY UNIVERSE EVENTS
-                </h3>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-neutral-300 font-medium tracking-wide">
-                  {movie.keyEvents.map((ev, i) => (
-                    <li key={i} className="bg-neutral-900/60 border border-neutral-850 p-2.5 rounded-none flex items-start gap-2">
-                      <span className="text-neutral-500 font-bold select-none">&gt;</span>
-                      <span>{ev}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Characters Involved */}
-              <div className="space-y-3">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-white rounded-none" />
-                  OPERATIVE HEROES
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {movie.characters.map((char, i) => (
-                    <span
-                      key={i}
-                      className="px-2.5 py-1 bg-neutral-900 border border-neutral-750 text-[11px] font-bold tracking-widest text-neutral-300 uppercase rounded-none"
-                    >
-                      {char}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          )}
-
-          {/* Action Controls & Stream Buttons Footer */}
-          <div className="pt-6 border-t border-neutral-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-            
-            {/* Stream / Download Full Movie Links */}
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-[11px] font-black uppercase tracking-widest text-neutral-400 flex items-center gap-1">
-                <Download className="w-3.5 h-3.5 text-white" /> WATCH / DOWNLOAD //
+          <div className="flex flex-wrap gap-2">
+            {movie.characters.map((char) => (
+              <span key={char} className="rounded-full border border-[#e5e7eb] px-3 py-1 text-[11px] font-bold text-neutral-600">
+                {char}
               </span>
-              <a
-                href={`https://www.goojara.to/search.php?q=${encodeURIComponent(movie.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-2 bg-black hover:bg-neutral-900 text-white border border-neutral-700 hover:border-white text-xs font-bold tracking-widest uppercase transition-all duration-300 active:scale-95 cursor-pointer rounded-none shadow-sm"
-                title={`Stream or Download ${movie.title} on Goojara.to`}
-              >
-                <ExternalLink className="w-3 h-3 text-white" />
-                <span>GOOJARA.TO</span>
-              </a>
-
-              <a
-                href={`https://t4tsa.cc/?s=${encodeURIComponent(movie.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-2 bg-black hover:bg-neutral-900 text-white border border-neutral-700 hover:border-white text-xs font-bold tracking-widest uppercase transition-all duration-300 active:scale-95 cursor-pointer rounded-none shadow-sm"
-                title={`Stream or Download ${movie.title} on T4TSA.cc`}
-              >
-                <ExternalLink className="w-3 h-3 text-white" />
-                <span>T4TSA.CC</span>
-              </a>
-            </div>
-
-            {/* Watched and Expand Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-850">
-              {/* Minimal Watched Button */}
-              <button
-                onClick={() => onToggleWatched(movie.id)}
-                className={`flex items-center gap-2 px-4 py-2 border text-xs font-bold tracking-widest uppercase transition-all duration-300 active:scale-95 cursor-pointer rounded-none ${
-                  isWatched
-                    ? "bg-white text-black border-white shadow-md font-black"
-                    : "bg-black text-neutral-400 border-neutral-700 hover:border-white hover:text-white"
-                }`}
-              >
-                <Check className={`w-3.5 h-3.5 ${isWatched ? "text-black stroke-[3]" : "text-neutral-400"}`} />
-                <span>{isWatched ? "WATCHED" : "MARK WATCHED"}</span>
-              </button>
-
-              {/* Expand / Collapse Toggle Button */}
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1.5 px-4 py-2 bg-black hover:bg-neutral-900 text-white border border-neutral-700 hover:border-white text-xs font-bold tracking-widest uppercase transition-all duration-300 active:scale-95 cursor-pointer rounded-none"
-              >
-                <span>{isExpanded ? "COLLAPSE" : "EXPAND LOGS"}</span>
-                {isExpanded ? (
-                  <ChevronUp className="w-3.5 h-3.5 text-white" />
-                ) : (
-                  <ChevronDown className="w-3.5 h-3.5 text-white" />
-                )}
-              </button>
-            </div>
-
+            ))}
           </div>
+        </div>
+      )}
 
+      <div className="mt-auto flex flex-col gap-3 border-t border-[#eeeeee] pt-4">
+        <div className="flex items-center justify-between text-xs font-bold text-neutral-500">
+          <span>Released {movie.releaseYear}</span>
+          <span>{movie.characters.length} heroes</span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <a
+            href={`https://www.goojara.to/search.php?q=${encodeURIComponent(movie.title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] px-3 py-2 text-xs font-black text-neutral-700 transition hover:border-neutral-950 hover:text-neutral-950"
+            title={`Stream or Download ${movie.title} on Goojara.to`}
+          >
+            <Download className="h-3.5 w-3.5 text-lime-500" />
+            Goojara
+          </a>
+          <a
+            href={`https://t4tsa.cc/?s=${encodeURIComponent(movie.title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[#e5e7eb] px-3 py-2 text-xs font-black text-neutral-700 transition hover:border-neutral-950 hover:text-neutral-950"
+            title={`Stream or Download ${movie.title} on T4TSA.cc`}
+          >
+            <ExternalLink className="h-3.5 w-3.5 text-lime-500" />
+            T4TSA
+          </a>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="inline-flex items-center justify-center rounded-full border border-[#e5e7eb] p-2 text-neutral-700 transition hover:border-neutral-950 hover:text-neutral-950"
+            title={isExpanded ? "Collapse details" : "Expand details"}
+          >
+            {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
         </div>
       </div>
     </article>

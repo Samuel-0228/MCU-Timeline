@@ -1,70 +1,57 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  Archive,
+  BadgeCheck,
+  BookOpen,
+  Check,
+  Clapperboard,
+  Compass,
+  Download,
+  Folder,
+  Grid3X3,
+  Layers3,
+  PlayCircle,
+  RotateCcw,
+  Search,
+  Shield,
+  Sparkles,
+  Users,
+} from "lucide-react";
 import { mcuTimeline } from "../data/mcuTimeline";
-import Navbar from "../components/Navbar";
 import FilterBar from "../components/FilterBar";
 import MovieCard from "../components/MovieCard";
+import Navbar from "../components/Navbar";
 import StoryRecapModal from "../components/StoryRecapModal";
 import SystemDocsModal from "../components/SystemDocsModal";
-import CosmicBackground from "../components/CosmicBackground";
-import IntroScreen from "../components/IntroScreen";
-import { Shield, Zap, RotateCcw } from "lucide-react";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCharacter, setSelectedCharacter] = useState("All");
   const [selectedPhase, setSelectedPhase] = useState("All");
   const [sortOrder, setSortOrder] = useState<"chronological" | "release">("chronological");
-  
-  // Watched list state stored in localStorage
   const [watchedList, setWatchedList] = useState<string[]>([]);
-  
-  // Dark mode toggle state (always dark in Grok xAI console UI)
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  
-  // Story Recap Overlay state
   const [isRecapOpen, setIsRecapOpen] = useState(false);
-
-  // System Docs Overlay state
   const [isSystemDocsOpen, setIsSystemDocsOpen] = useState(false);
 
-  // Intro Screen state & User Perspective
-  const [showIntro, setShowIntro] = useState(true);
-  const [userPerspective, setUserPerspective] = useState<"cap" | "ironman" | null>(null);
-
-  // Load initial watched list & user perspective from localStorage asynchronously
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (typeof window !== "undefined") {
-        // Load watched list
-        const storedWatched = localStorage.getItem("mcu_watched_list");
-        if (storedWatched) {
-          try {
-            setWatchedList(JSON.parse(storedWatched));
-          } catch (e) {
-            console.error(e);
-          }
-        }
+    if (typeof window === "undefined") return;
 
-        // Load user perspective
-        const storedPerspective = localStorage.getItem("mcu_user_perspective") as "cap" | "ironman" | null;
-        if (storedPerspective) {
-          setUserPerspective(storedPerspective);
-          setShowIntro(false);
-        } else {
-          setShowIntro(true);
+    const timer = window.setTimeout(() => {
+      const storedWatched = localStorage.getItem("mcu_watched_list");
+      if (storedWatched) {
+        try {
+          setWatchedList(JSON.parse(storedWatched));
+        } catch (error) {
+          console.error(error);
         }
-
-        // Ensure dark class is active
-        document.documentElement.classList.add("dark");
       }
     }, 0);
 
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, []);
 
-  // Save watched list to localStorage
   const handleToggleWatched = (id: string) => {
     setWatchedList((prev) => {
       const newList = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
@@ -75,52 +62,36 @@ export default function Home() {
     });
   };
 
-  // Toggle dark mode (kept for prop consistency, ensures dark mode remains locked in console view)
-  const handleToggleDarkMode = () => {
-    setIsDarkMode(true);
-    if (typeof window !== "undefined") {
-      document.documentElement.classList.add("dark");
-    }
-  };
-
-  // Reset Perspective Handler for re-experiencing the intro screen & poll revoting
-  const handleResetPerspective = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("mcu_user_perspective");
-      // Note: we keep hero_choice so they can see the live results consensus screen, or they can click RESET CHOICE in the poll!
-    }
-    setUserPerspective(null);
-    setShowIntro(true);
-  };
-
-  // Extract all unique characters for the filter dropdown
   const allCharacters = useMemo(() => {
     const chars = new Set<string>();
     mcuTimeline.forEach((movie) => {
-      movie.characters.forEach((c) => chars.add(c));
+      movie.characters.forEach((character) => chars.add(character));
     });
     return Array.from(chars).sort();
   }, []);
 
-  // Filter and sort movies dynamically
+  const phaseCounts = useMemo(() => {
+    return mcuTimeline.reduce<Record<string, number>>((acc, movie) => {
+      acc[movie.phase] = (acc[movie.phase] || 0) + 1;
+      return acc;
+    }, {});
+  }, []);
+
   const filteredMovies = useMemo(() => {
     return mcuTimeline
       .filter((movie) => {
-        // Search query filter
         if (searchQuery.trim() !== "") {
-          const q = searchQuery.toLowerCase();
-          const matchTitle = movie.title.toLowerCase().includes(q);
-          const matchSummary = movie.summary.toLowerCase().includes(q);
-          const matchEvent = movie.keyEvents.some((e) => e.toLowerCase().includes(q));
+          const query = searchQuery.toLowerCase();
+          const matchTitle = movie.title.toLowerCase().includes(query);
+          const matchSummary = movie.summary.toLowerCase().includes(query);
+          const matchEvent = movie.keyEvents.some((event) => event.toLowerCase().includes(query));
           if (!matchTitle && !matchSummary && !matchEvent) return false;
         }
 
-        // Character filter
         if (selectedCharacter !== "All" && !movie.characters.includes(selectedCharacter)) {
           return false;
         }
 
-        // Phase filter
         if (selectedPhase !== "All" && movie.phase !== selectedPhase) {
           return false;
         }
@@ -131,132 +102,237 @@ export default function Home() {
         if (sortOrder === "release") {
           return a.releaseYear - b.releaseYear;
         }
-        // Strict chronological order is already the baseline order of mcuTimeline array
-        return 0; 
+        return 0;
       });
   }, [searchQuery, selectedCharacter, selectedPhase, sortOrder]);
 
+  const uniquePhases = Object.keys(phaseCounts).sort();
+  const watchedPercent = mcuTimeline.length > 0 ? Math.round((watchedList.length / mcuTimeline.length) * 100) : 0;
+  const popularCharacters = allCharacters.slice(0, 12);
+
   return (
-    <main className="relative min-h-screen w-full flex flex-col bg-black text-white selection:bg-white selection:text-black">
-      {/* Immersive Intro Screen Overlay */}
-      {showIntro && (
-        <IntroScreen
-          onComplete={(path) => {
-            setUserPerspective(path === "captain" ? "cap" : "ironman");
-            setShowIntro(false);
-          }}
-        />
-      )}
-
-      {/* Immersive Three.js Monochrome Starfield Void Background */}
-      <CosmicBackground />
-
-      {/* Grok xAI Console Navbar */}
+    <main className="min-h-screen bg-white text-neutral-950">
       <Navbar
         watchedCount={watchedList.length}
         totalMovies={mcuTimeline.length}
-        isDarkMode={isDarkMode}
-        toggleDarkMode={handleToggleDarkMode}
+        isDarkMode={false}
+        toggleDarkMode={() => undefined}
         onOpenRecap={() => setIsRecapOpen(true)}
         onOpenSystemDocs={() => setIsSystemDocsOpen(true)}
       />
 
-      {/* Main Content Container with Generous Negative Space & Pro Grid Structure */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
-        
-        {/* Active Perspective Banner & Reset Trigger */}
-        {userPerspective && (
-          <div className="mb-8 p-4 bg-[#050505] border border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
-            <div className="flex items-center gap-3 text-xs font-bold tracking-widest text-white uppercase">
-              {userPerspective === "cap" ? (
-                <>
-                  <span className="p-2 bg-blue-950 border border-blue-500 text-blue-400 rounded-none flex items-center justify-center">
-                    <Shield className="w-4 h-4 fill-current" />
-                  </span>
-                  <span>SYS PERSPECTIVE: CAPTAIN AMERICA // HONOR • LEGACY • LEADERSHIP</span>
-                </>
-              ) : (
-                <>
-                  <span className="p-2 bg-red-950 border border-yellow-500 text-yellow-400 rounded-none flex items-center justify-center">
-                    <Zap className="w-4 h-4 fill-current" />
-                  </span>
-                  <span>SYS PERSPECTIVE: IRON MAN // TECH • INNOVATION • FUTURISM</span>
-                </>
-              )}
+      <div className="flex min-h-[calc(100vh-80px)]">
+        <aside className="hidden w-72 shrink-0 border-r border-[#e5e7eb] bg-[#fafafa] lg:flex lg:flex-col">
+          <div className="border-b border-[#eeeeee] p-5">
+            <div className="rounded-lg bg-lime-300 p-4 text-neutral-950">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white/75">
+                  <Shield className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-black uppercase">Active archive</p>
+                  <h2 className="text-lg font-black">MCU Timeline</h2>
+                </div>
+              </div>
             </div>
 
-            <button
-              onClick={handleResetPerspective}
-              className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-neutral-900 border border-neutral-700 hover:border-white text-neutral-400 hover:text-white text-xs font-bold tracking-widest uppercase transition-all duration-300 active:scale-95 cursor-pointer rounded-none"
-              title="View global poll consensus and change perspective"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-white" />
-              <span>VIEW GLOBAL POLL / CHANGE PERSPECTIVE</span>
-            </button>
+            <nav className="mt-5 space-y-1 text-sm font-bold">
+              <button className="flex w-full items-center gap-3 rounded-lg bg-lime-300 px-3 py-3 text-left text-neutral-950">
+                <Grid3X3 className="h-4 w-4" />
+                Timeline dashboard
+              </button>
+              <button onClick={() => setIsRecapOpen(true)} className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-neutral-600 transition hover:bg-white hover:text-neutral-950">
+                <PlayCircle className="h-4 w-4" />
+                Story recap
+              </button>
+              <button onClick={() => setIsSystemDocsOpen(true)} className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-neutral-600 transition hover:bg-white hover:text-neutral-950">
+                <BookOpen className="h-4 w-4" />
+                Fan guide
+              </button>
+              <button
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    localStorage.removeItem("mcu_user_perspective");
+                    localStorage.removeItem("hero_choice");
+                  }
+                }}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-neutral-600 transition hover:bg-white hover:text-neutral-950"
+              >
+                <RotateCcw className="h-4 w-4" />
+                Reset vote
+              </button>
+            </nav>
           </div>
-        )}
 
-        {/* Interactive Console Filter Bar */}
-        <FilterBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          selectedCharacter={selectedCharacter}
-          setSelectedCharacter={setSelectedCharacter}
-          selectedPhase={selectedPhase}
-          setSelectedPhase={setSelectedPhase}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          allCharacters={allCharacters}
-        />
-
-        {/* Timeline Entries List */}
-        {filteredMovies.length === 0 ? (
-          <div className="w-full bg-[#050505] border border-neutral-800 rounded-none p-16 text-center my-12 shadow-2xl">
-            <h3 className="text-lg font-black tracking-widest text-white uppercase">
-              SYS // NO TIMELINE ENTRIES FOUND IN LORE MATRIX
-            </h3>
-            <p className="text-xs text-neutral-400 mt-3 tracking-widest uppercase">
-              ADJUST SYSTEM FILTERS OR KEYWORD PARAMETERS TO DISCOVER MCU LOGS.
-            </p>
+          <div className="border-b border-[#eeeeee] px-5">
+            <div className="flex items-center gap-5 text-xs font-black text-neutral-500">
+              <button className="border-b-2 border-neutral-950 py-4 text-neutral-950">Sets</button>
+              <button className="py-4 transition hover:text-neutral-950">Styles</button>
+              <button className="py-4 transition hover:text-neutral-950">Themes</button>
+            </div>
           </div>
-        ) : (
-          <div className="relative border-l border-neutral-700 pl-6 sm:pl-12 ml-2 sm:ml-4 space-y-16 my-12 transition-colors duration-500">
-            {filteredMovies.map((movie) => (
-              <div key={movie.id} className="relative group/item">
-                {/* Timeline Square Indicator */}
-                <div className="absolute -left-[29px] sm:-left-[53px] top-8 w-3 h-3 bg-black border-2 border-white group-hover/item:bg-white transition-all duration-300 z-20 shadow-sm" />
-                
-                {/* Movie Card */}
-                <MovieCard
-                  movie={movie}
-                  isWatched={watchedList.includes(movie.id)}
-                  onToggleWatched={handleToggleWatched}
-                />
+
+          <div className="min-h-0 flex-1 overflow-y-auto p-5">
+            <p className="mb-3 text-xs font-black uppercase text-neutral-400">Timeline folders</p>
+            <div className="space-y-1">
+              {uniquePhases.map((phase) => (
+                <button
+                  key={phase}
+                  onClick={() => setSelectedPhase(phase)}
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-bold transition ${
+                    selectedPhase === phase ? "bg-white text-neutral-950 shadow-sm" : "text-neutral-600 hover:bg-white hover:text-neutral-950"
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <Folder className="h-4 w-4 text-neutral-400" />
+                    {phase}
+                  </span>
+                  <span className="text-xs text-neutral-400">{phaseCounts[phase]}</span>
+                </button>
+              ))}
+            </div>
+
+            <p className="mb-3 mt-7 text-xs font-black uppercase text-neutral-400">Hero folders</p>
+            <div className="space-y-1">
+              {popularCharacters.map((character) => (
+                <button
+                  key={character}
+                  onClick={() => setSelectedCharacter(character)}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-bold transition ${
+                    selectedCharacter === character ? "bg-white text-neutral-950 shadow-sm" : "text-neutral-600 hover:bg-white hover:text-neutral-950"
+                  }`}
+                >
+                  <Folder className="h-4 w-4 shrink-0 text-neutral-400" />
+                  <span className="truncate">{character}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <section className="min-w-0 flex-1">
+          <FilterBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            selectedCharacter={selectedCharacter}
+            setSelectedCharacter={setSelectedCharacter}
+            selectedPhase={selectedPhase}
+            setSelectedPhase={setSelectedPhase}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            allCharacters={allCharacters}
+          />
+
+          <div className="px-4 py-8 sm:px-6 lg:px-8">
+            <section className="grid gap-8 border-b border-[#eeeeee] pb-10 xl:grid-cols-[minmax(0,1fr)_360px]">
+              <div>
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] px-3 py-1.5 text-xs font-black text-neutral-600">
+                  <Sparkles className="h-3.5 w-3.5 text-lime-500" />
+                  Chronological fan archive
+                </div>
+                <h1 className="max-w-4xl text-4xl font-black leading-tight text-neutral-950 sm:text-5xl">
+                  Watch the Avengers saga in MCU timeline order.
+                </h1>
+
+                <div className="mt-5 flex flex-wrap items-center gap-4 text-sm font-bold text-neutral-600">
+                  <span className="inline-flex items-center gap-2">
+                    <Archive className="h-4 w-4 text-lime-500" />
+                    {mcuTimeline.length} titles
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <Layers3 className="h-4 w-4 text-lime-500" />
+                    {uniquePhases.length} phases
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <Users className="h-4 w-4 text-lime-500" />
+                    {allCharacters.length} heroes
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <BadgeCheck className="h-4 w-4 text-lime-500" />
+                    {watchedPercent}% watched
+                  </span>
+                </div>
+
+                <ul className="mt-7 grid gap-3 text-sm font-semibold text-neutral-700 sm:grid-cols-2">
+                  <li className="flex items-start gap-3">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-lime-500" />
+                    Follow the MCU from Steve Rogers in 1943 through the multiverse era.
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-lime-500" />
+                    Play trailers and story recaps directly from each timeline card.
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-lime-500" />
+                    Filter by phase, hero, release order, or key event text.
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-lime-500" />
+                    Keep track of watched entries and jump to fan download searches.
+                  </li>
+                </ul>
               </div>
-            ))}
+
+              <div className="space-y-3">
+                {[
+                  { icon: Clapperboard, title: "Trailer Library", subtitle: `${filteredMovies.length} matching trailer cards` },
+                  { icon: Download, title: "Watch / Download", subtitle: "Goojara and T4TSA links stay attached" },
+                  { icon: Compass, title: "Timeline Mode", subtitle: sortOrder === "chronological" ? "Chronological order active" : "Release order active" },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-center gap-4 rounded-lg border border-[#e5e7eb] bg-white p-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-md bg-lime-300 text-neutral-950">
+                      <item.icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-neutral-950">{item.title}</h3>
+                      <p className="text-sm font-semibold text-neutral-500">{item.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="py-8">
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 className="text-3xl font-black text-neutral-950">Timeline assets</h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-600">
+                    Browse the current MCU archive using the original site entries, summaries, trailers, hero tags, and watch/download links.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-xs font-black text-neutral-500">
+                  <span>Browse by</span>
+                  <button onClick={() => setSelectedPhase("All")} className="transition hover:text-neutral-950">All</button>
+                  <button onClick={() => setSortOrder("chronological")} className="transition hover:text-neutral-950">Chronology</button>
+                  <button onClick={() => setSortOrder("release")} className="transition hover:text-neutral-950">Release</button>
+                </div>
+              </div>
+
+              {filteredMovies.length === 0 ? (
+                <div className="rounded-lg border border-[#e5e7eb] bg-white p-12 text-center">
+                  <Search className="mx-auto h-8 w-8 text-lime-500" />
+                  <h3 className="mt-4 text-xl font-black text-neutral-950">No timeline entries found</h3>
+                  <p className="mt-2 text-sm text-neutral-500">Adjust the search, phase, or hero filter to bring the archive back into view.</p>
+                </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                  {filteredMovies.map((movie) => (
+                    <MovieCard
+                      key={movie.id}
+                      movie={movie}
+                      isWatched={watchedList.includes(movie.id)}
+                      onToggleWatched={handleToggleWatched}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
           </div>
-        )}
+        </section>
       </div>
 
-      {/* Story Recap Overlay Modal (Auto-Play Playlist) */}
-      <StoryRecapModal
-        movies={filteredMovies}
-        isOpen={isRecapOpen}
-        onClose={() => setIsRecapOpen(false)}
-      />
-
-      {/* System Docs Overlay Modal */}
-      <SystemDocsModal
-        isOpen={isSystemDocsOpen}
-        onClose={() => setIsSystemDocsOpen(false)}
-      />
-
-      {/* Console System Footer */}
-      <footer className="w-full py-10 border-t border-neutral-800 bg-black text-center text-xs text-neutral-500 relative z-10 tracking-widest uppercase font-bold">
-        <p className="max-w-7xl mx-auto px-4 leading-relaxed">
-          AVENGERS TIMELINE • XAI CONSOLE SYSTEM ARCHIVE // ALL MCU LORE & HEROES PROPERTY OF MARVEL STUDIOS.
-        </p>
-      </footer>
+      <StoryRecapModal movies={filteredMovies} isOpen={isRecapOpen} onClose={() => setIsRecapOpen(false)} />
+      <SystemDocsModal isOpen={isSystemDocsOpen} onClose={() => setIsSystemDocsOpen(false)} />
     </main>
   );
 }

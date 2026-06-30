@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, ArrowUpDown, Filter } from "lucide-react";
+import { ArrowUpDown, Filter, Search, SlidersHorizontal } from "lucide-react";
 
 interface FilterBarProps {
   searchQuery: string;
@@ -29,83 +29,67 @@ export default function FilterBar({
   const phases = ["All", "Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 5"];
 
   return (
-    <div className="w-full bg-black/80 backdrop-blur-md border border-neutral-800 hover:border-neutral-700 rounded-none p-6 mb-10 transition-all duration-300 shadow-2xl relative z-30">
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
-        
-        {/* Search Input */}
-        <div className="relative flex-1">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-neutral-400">
-            <Search className="w-4 h-4 text-white" />
-          </span>
+    <section className="border-b border-[#eeeeee] bg-white px-4 py-5 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="relative min-w-0 flex-1">
+          <Search className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="SEARCH LORE ARCHIVES, EVENTS, OR LOGS..."
-            className="w-full pl-12 pr-4 py-3 bg-neutral-900/90 border border-neutral-800 focus:border-white rounded-none text-white text-xs font-bold tracking-widest uppercase focus:outline-none transition-all placeholder:text-neutral-500"
+            placeholder="Search timeline, heroes, events, or trailers"
+            className="h-12 w-full rounded-full border border-[#e5e7eb] bg-white pl-12 pr-5 text-sm font-semibold text-neutral-950 outline-none transition placeholder:text-neutral-400 focus:border-neutral-950"
           />
         </div>
 
-        {/* Filters & Sorting Controls */}
-        <div className="flex flex-wrap items-center gap-4">
-          
-          {/* Character Filter Dropdown */}
-          <div className="relative flex items-center min-w-[180px] flex-1 sm:flex-initial">
-            <span className="absolute left-4 text-white pointer-events-none">
-              <Filter className="w-3.5 h-3.5" />
-            </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative min-w-[210px]">
+            <Filter className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
             <select
               value={selectedCharacter}
               onChange={(e) => setSelectedCharacter(e.target.value)}
-              className="w-full pl-10 pr-8 py-3 bg-neutral-900/90 border border-neutral-800 focus:border-white rounded-none text-white text-xs font-bold tracking-widest uppercase focus:outline-none transition-all appearance-none cursor-pointer"
+              className="h-12 w-full appearance-none rounded-full border border-[#e5e7eb] bg-white pl-11 pr-10 text-xs font-black text-neutral-800 outline-none transition focus:border-neutral-950"
             >
-              <option value="All">ALL HEROES</option>
+              <option value="All">All heroes</option>
               {allCharacters.map((char) => (
                 <option key={char} value={char}>
-                  {char.toUpperCase()}
+                  {char}
                 </option>
               ))}
             </select>
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white text-[10px] font-black">
-              ▼
-            </span>
+            <SlidersHorizontal className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
           </div>
 
-          {/* Chronological vs Release Order Toggle */}
           <button
             onClick={() => setSortOrder(sortOrder === "chronological" ? "release" : "chronological")}
-            className="flex items-center justify-center gap-2.5 px-5 py-3 bg-black hover:bg-neutral-900 border border-neutral-700 hover:border-white rounded-none text-white text-xs font-bold tracking-widest uppercase transition-all shadow-sm active:scale-95 cursor-pointer flex-1 sm:flex-initial"
+            className="inline-flex h-12 items-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-4 text-xs font-black text-neutral-800 transition hover:border-neutral-950"
             title="Switch sorting order"
           >
-            <ArrowUpDown className="w-3.5 h-3.5 text-white" />
-            <span>{sortOrder === "chronological" ? "CHRONOLOGICAL" : "RELEASE ORDER"}</span>
+            <ArrowUpDown className="h-4 w-4 text-lime-500" />
+            {sortOrder === "chronological" ? "Chronological" : "Release order"}
           </button>
-
         </div>
       </div>
 
-      {/* Phase Filter Button Group */}
-      <div className="mt-6 pt-6 border-t border-neutral-800 flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
-        <span className="text-[11px] font-black uppercase tracking-widest text-neutral-500 hidden sm:block mr-4">
-          PHASE FILTER //
-        </span>
+      <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1">
+        <span className="shrink-0 text-xs font-black uppercase text-neutral-400">Browse by</span>
         {phases.map((phase) => {
           const isActive = selectedPhase === phase;
           return (
             <button
               key={phase}
               onClick={() => setSelectedPhase(phase)}
-              className={`px-5 py-2 rounded-none text-xs font-bold tracking-widest transition-all cursor-pointer whitespace-nowrap border ${
+              className={`shrink-0 rounded-full border px-4 py-2 text-xs font-black transition ${
                 isActive
-                  ? "bg-white text-black border-white shadow-md"
-                  : "bg-black text-neutral-400 border-neutral-800 hover:border-neutral-600 hover:text-white"
+                  ? "border-lime-300 bg-lime-300 text-neutral-950"
+                  : "border-[#e5e7eb] bg-white text-neutral-500 hover:border-neutral-300 hover:text-neutral-950"
               }`}
             >
-              {phase.toUpperCase()}
+              {phase}
             </button>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

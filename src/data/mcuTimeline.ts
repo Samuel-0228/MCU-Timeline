@@ -25,8 +25,8 @@ export const mcuTimeline: TimelineEntry[] = [
       "Hydra harnesses the power of the Tesseract (Space Stone).",
       "Steve Rogers is frozen in Arctic ice for nearly 70 years."
     ],
-    characters: ["Captain America", "Bucky Barnes", "Peggy Carter", "Howard Stark", "Red Skull"],
-    youtubeEmbedId: "JerV33r7IPQ",
+    characters: ["Steve Rogers / Captain America", "Peggy Carter", "Bucky Barnes", "Johann Schmidt / Red Skull", "Howard Stark", "Dr. Abraham Erskine"],
+    youtubeEmbedId: "gj5oWzp3tyU",
     theme: "cap"
   },
   {

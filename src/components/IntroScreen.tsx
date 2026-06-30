@@ -13,8 +13,8 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
   const [hasVoted, setHasVoted] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
-  // Poll votes state initialized with realistic base numbers
-  const [votes, setVotes] = useState({ captain: 14238, ironman: 18452 });
+  // Poll votes state starting at 0 for real live user voting
+  const [votes, setVotes] = useState({ captain: 0, ironman: 0 });
 
   // Animated counter states for percentages
   const [displayCapPercent, setDisplayCapPercent] = useState(0);
@@ -202,10 +202,10 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
           !hasVoted ? "cursor-pointer hover:border-white/40" : ""
         }`}
       >
-        {/* Background Character Image with reliable fallback */}
+        {/* Background Character Image (Direct raw image CDN to prevent blank HTML wrapper errors) */}
         <div className="absolute inset-0 w-full h-full transform group-hover:scale-105 transition-transform duration-1000 ease-out brightness-90 group-hover:brightness-110 contrast-100 group-hover:contrast-115">
           <Image
-            src="https://images.unsplash.com/photo-1569074187119-c87815b476da?q=80&w=2000&auto=format&fit=crop"
+            src="https://upload.wikimedia.org/wikipedia/en/3/37/Captain_America_The_First_Avenger_poster.jpg"
             alt="Captain America Perspective"
             fill
             priority

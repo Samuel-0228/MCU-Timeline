@@ -4,20 +4,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { TimelineEntry } from "../data/mcuTimeline";
 import {
-  BadgeCheck,
   Calendar,
   Check,
   ChevronDown,
   ChevronUp,
-  Circle,
   Download,
   ExternalLink,
   Film,
-  Hexagon,
   Play,
-  Shield,
-  Sparkle,
-  Star,
 } from "lucide-react";
 
 interface MovieCardProps {
@@ -26,8 +20,6 @@ interface MovieCardProps {
   onToggleWatched: (id: string) => void;
   onMouseEnter?: () => void;
 }
-
-const previewIcons = [Shield, Star, Circle, Hexagon, Sparkle, BadgeCheck];
 
 export default function MovieCard({
   movie,

@@ -1,0 +1,30 @@
+{
+  "submissions": [
+    {
+      "title": "The nobelest Ending",
+      "creator": "Me",
+      "platform": "youtube",
+      "sourceUrl": "https://www.youtube.com/shorts/Ozw7ym8Tt7Q",
+      "youtubeId": "Ozw7ym8Tt7Q",
+      "caption": "Pending moderation. This submission will appear in the feed only after admin approval.",
+      "character": "Mixed",
+      "mood": "Epic",
+      "team": "Mixed",
+      "durationLabel": "--",
+      "likes": 0,
+      "saves": 0,
+      "tags": [
+        "Cinematic"
+      ],
+      "id": "fan-submission-1782908844343-1",
+      "status": "approved",
+      "moderationTags": [
+        "Cinematic"
+      ],
+      "submittedAt": "2026-07-01T12:27:24.343Z"
+    }
+  ],
+  "counters": {
+    "submission": 1
+  }
+}

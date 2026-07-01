@@ -25,6 +25,7 @@ import MovieCard from "../components/MovieCard";
 import Navbar from "../components/Navbar";
 import StoryRecapModal from "../components/StoryRecapModal";
 import SystemDocsModal from "../components/SystemDocsModal";
+import FanEditsSection from "../components/FanEditsSection";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -167,8 +168,8 @@ export default function Home() {
           <div className="border-b border-[#eeeeee] px-5">
             <div className="flex items-center gap-5 text-xs font-black text-neutral-500">
               <button className="border-b-2 border-neutral-950 py-4 text-neutral-950">Sets</button>
-              <button className="py-4 transition hover:text-neutral-950">Styles</button>
-              <button className="py-4 transition hover:text-neutral-950">Themes</button>
+              {/*<button className="py-4 transition hover:text-neutral-950">Styles</button>
+              <button className="py-4 transition hover:text-neutral-950">Themes</button> */}
             </div>
           </div>
 
@@ -333,6 +334,7 @@ export default function Home() {
 
       <StoryRecapModal movies={filteredMovies} isOpen={isRecapOpen} onClose={() => setIsRecapOpen(false)} />
       <SystemDocsModal isOpen={isSystemDocsOpen} onClose={() => setIsSystemDocsOpen(false)} />
+      <FanEditsSection />
     </main>
   );
 }

@@ -387,7 +387,7 @@ export default function FanEditsSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(163,230,53,0.12),transparent_30%),radial-gradient(circle_at_bottom,rgba(59,130,246,0.12),transparent_30%)]" />
 
       <div className="sticky top-0 z-30 border-b border-white/8 bg-black/55 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-white/45">Fan Edits</p>
             <h2 className="text-xl font-black text-white sm:text-2xl">Short-video feed</h2>
@@ -437,21 +437,22 @@ export default function FanEditsSection() {
         </div>
       </div>
 
-      <div className="h-[calc(100svh-64px)] overflow-y-auto snap-y snap-mandatory scroll-smooth">
+      <div className="h-[calc(100svh-64px)] overflow-y-auto snap-y snap-mandatory scroll-smooth px-3 py-4 sm:px-5 lg:px-8">
         {filteredFeed.map((edit) => (
-          <FanEditCard
-            key={edit.id}
-            edit={edit}
-            isActive={activeVideoId === edit.id}
-            isLiked={likedIds.includes(edit.id)}
-            isSaved={savedIds.includes(edit.id)}
-            isMuted={isMuted}
-            onActivate={setActiveVideoId}
-            onToggleLike={(id) => toggleLocalArray(id, "fan_edits_likes", setLikedIds)}
-            onToggleSave={(id) => toggleLocalArray(id, "fan_edits_saves", setSavedIds)}
-            onToggleMute={() => setIsMuted((prev) => !prev)}
-            onShare={handleShare}
-          />
+          <div key={edit.id} className="flex justify-center py-3">
+            <FanEditCard
+              edit={edit}
+              isActive={activeVideoId === edit.id}
+              isLiked={likedIds.includes(edit.id)}
+              isSaved={savedIds.includes(edit.id)}
+              isMuted={isMuted}
+              onActivate={setActiveVideoId}
+              onToggleLike={(id) => toggleLocalArray(id, "fan_edits_likes", setLikedIds)}
+              onToggleSave={(id) => toggleLocalArray(id, "fan_edits_saves", setSavedIds)}
+              onToggleMute={() => setIsMuted((prev) => !prev)}
+              onShare={handleShare}
+            />
+          </div>
         ))}
 
         <div ref={sentinelRef} className="h-20" />

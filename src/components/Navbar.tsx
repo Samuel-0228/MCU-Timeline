@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { BookOpen, CheckCircle2, Clapperboard, FileText, Search } from "lucide-react";
 
 interface NavbarProps {
@@ -37,7 +38,7 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#e5e7eb] bg-white/95 backdrop-blur-xl">
       <div className="flex min-h-20 items-center gap-4 px-4 sm:px-6 xl:px-8">
-        <div className="flex min-w-[220px] items-center gap-3">
+        <Link href="/" className="flex min-w-[220px] items-center gap-3 transition hover:opacity-80">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-900 bg-neutral-950 text-sm font-black text-white">
             A
           </div>
@@ -45,7 +46,7 @@ export default function Navbar({
             <h1 className="text-sm font-black uppercase text-neutral-950">Avengers Timeline</h1>
             <p className="text-[11px] font-semibold text-neutral-500">MCU viewing dashboard</p>
           </div>
-        </div>
+        </Link>
 
         <div className="hidden items-center rounded-full border border-[#e5e7eb] bg-neutral-50 p-1 text-xs font-bold text-neutral-500 lg:flex">
           <button className="rounded-full bg-white px-4 py-2 text-neutral-950 shadow-sm">Timeline</button>

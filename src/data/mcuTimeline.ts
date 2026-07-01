@@ -154,7 +154,7 @@ export const mcuTimeline: TimelineEntry[] = [
       "The Reality Stone is delivered to the Collector on Knowhere for safekeeping."
     ],
     characters: ["Thor", "Loki", "Jane Foster", "Odin", "Malekith", "The Collector"],
-    youtubeEmbedId: "npvJ9FTnwAs",
+    youtubeEmbedId: "npvJ9FTgZbM",
     theme: "thor"
   },
   {
@@ -170,7 +170,7 @@ export const mcuTimeline: TimelineEntry[] = [
       "Sam Wilson adopts the winged combat exo-suit to become the Falcon."
     ],
     characters: ["Captain America", "Black Widow", "Falcon", "Winter Soldier", "Nick Fury", "Alexander Pierce"],
-    youtubeEmbedId: "tbayiPu209Q",
+    youtubeEmbedId: "7SlILk2WMTI",
     theme: "cap"
   },
   {

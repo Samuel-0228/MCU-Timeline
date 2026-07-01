@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Line-Art Icons Clone</title>
+    <style>
+        :root {
+            --bg-color: #fbfbf6;
+            --line-color: #000000;
+            --blue: #2563eb;
+            --lime: #d9f99d;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            max-width: 1000px;
+            padding: 40px;
+        }
+
+        .icon-box {
+            width: 260px;
+            height: 260px;
+            position: relative;
+            background: transparent;
+        }
+
+        /* --- ICON 1: File & Folder --- */
+        .folder {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            width: 140px;
+            height: 100px;
+            border: 3px solid var(--line-color);
+            border-radius: 8px;
+            background: white;
+        }
+        .folder::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -3px;
+            width: 50px;
+            height: 15px;
+            border: 3px solid var(--line-color);
+            border-bottom: none;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            background: white;
+        }
+        .file {
+            position: absolute;
+            top: 30px;
+            left: 45px;
+            width: 90px;
+            height: 110px;
+            border: 3px solid var(--line-color);
+            background: white;
+            border-radius: 4px;
+            box-shadow: 5px -5px 0 var(--bg-color), 5px -5px 0 3px var(--line-color);
+        }
+        .eye-container {
+            position: absolute;
+            bottom: 55px;
+            left: 55px;
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--line-color);
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .pupil {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--line-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pupil::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--line-color);
+            border-radius: 50%;
+        }
+        .window-ui {
+            position: absolute;
+            bottom: 25px;
+            right: 15px;
+            width: 110px;
+            height: 80px;
+            border: 3px solid var(--blue);
+            border-radius: 6px;
+            background: transparent;
+            z-index: 1;
+        }
+        .window-dots {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 4px;
+        }
+        .dot {
+            width: 5px;
+            height: 5px;
+            background: var(--blue);
+            border-radius: 50%;
+        }
+        .arrow-up {
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid var(--lime);
+            transform: rotate(45deg);
+        }
+
+        /* --- ICON 3: Engineer & Wrench --- */
+        .technician-accent {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: var(--lime);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .wrench-hand {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            width: 160px;
+            height: 160px;
+            z-index: 2;
+        }
+        .nut-blue {
+            position: absolute;
+            top: 60px;
+            left: 45px;
+            width: 45px;
+            height: 45px;
+            background: var(--blue);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            border: 3px solid var(--line-color);
+            z-index: 1;
+        }
+
+        /* --- ICON 4: Lighthouse --- */
+        .sea {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            width: 180px;
+            height: 15px;
+            background: var(--blue);
+            border-radius: 4px;
+        }
+        .lighthouse-body {
+            position: absolute;
+            bottom: 45px;
+            left: 55px;
+            width: 70px;
+            height: 140px;
+            border-left: 3px solid var(--line-color);
+            border-right: 3px solid var(--line-color);
+            background: white;
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+        }
+        .lighthouse-lime-stripe {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: var(--lime);
+            border-top: 3px solid var(--line-color);
+            border-bottom: 3px solid var(--line-color);
+        }
+        .lighthouse-top {
+            position: absolute;
+            top: 15px;
+            left: 67px;
+            width: 46px;
+            height: 32px;
+            border: 3px solid var(--line-color);
+            background: black;
+            border-radius: 4px 4px 0 0;
+        }
+        .cloud-bg {
+            position: absolute;
+            top: 100px;
+            left: 25px;
+            width: 45px;
+            height: 25px;
+            background: var(--lime);
+            border-radius: 20px;
+            opacity: 0.7;
+        }
+
+        /* --- ICON 5: Laptop & Face --- */
+        .laptop-base {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            width: 180px;
+            height: 10px;
+            border: 3px solid var(--line-color);
+            border-radius: 0 0 8px 8px;
+            background: white;
+        }
+        .laptop-screen {
+            position: absolute;
+            bottom: 50px;
+            left: 28px;
+            width: 150px;
+            height: 100px;
+            border: 3px solid var(--line-color);
+            border-bottom: none;
+            background: white;
+            border-radius: 8px 8px 0 0;
+        }
+        .screen-lines {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            width: 50px;
+            height: 4px;
+            background: var(--blue);
+            box-shadow: 0 10px 0 var(--blue), 0 20px 0 var(--blue);
+        }
+        .click-arrow {
+            position: absolute;
+            bottom: 20px;
+            left: 45px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 18px solid var(--blue);
+            transform: rotate(135deg);
+        }
+        .clock-tag {
+            position: absolute;
+            top: 25px;
+            left: 110px;
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--line-color);
+            background: var(--blue);
+            border-radius: 50%;
+            z-index: 2;
+        }
+        .clock-tag::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 16px;
+            width: 3px;
+            height: 12px;
+            background: white;
+            box-shadow: 4px 6px 0 white;
+            transform-origin: bottom;
+        }
+        .profile-side {
+            position: absolute;
+            bottom: 48px;
+            right: 10px;
+            width: 60px;
+            height: 90px;
+            border: 3px solid var(--line-color);
+            background: white;
+            border-radius: 30px 30px 0 0;
+            z-index: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="icon-grid">
+        
+        <!-- Icon 1: File, Folder, Window -->
+        <div class="icon-box">
+            <div class="file"></div>
+            <div class="folder"></div>
+            <div class="eye-container">
+                <div class="pupil"></div>
+            </div>
+            <div class="window-ui">
+                <div class="window-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <div class="arrow-up"></div>
+            </div>
+        </div>
+
+        <!-- Icon 2: Wrench & Mechanic Style (Hand-drawn Vector Mock) -->
+        <div class="icon-box">
+            <div class="technician-accent"></div>
+            <div class="nut-blue"></div>
+            <!-- Embedded SVG for clean vector line replication of complex outlines -->
+            <svg class="wrench-hand" viewBox="0 0 100 100" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Wrench handle & head -->
+                <path d="M25,65 L45,45 M20,70 L30,80" stroke-width="4"/>
+                <path d="M42,47 C38,40 40,30 48,25 C55,20 65,22 70,30 L60,40 L65,45 L75,35 C80,42 78,52 70,58 C62,64 52,62 47,55 Z" fill="white"/>
+                <!-- Worker profile line -->
+                <path d="M55,20 C65,10 80,15 85,25 L90,45 L70,55 Z" />
+                <path d="M75,20 L85,15" var(--lime) stroke-width="3" />
+            </svg>
+        </div>
+
+        <!-- Icon 3: Engineer / Gear Mock -->

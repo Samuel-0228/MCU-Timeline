@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { BookOpen, CheckCircle2, Clapperboard, FileText, LogIn, Search, Sparkles } from "lucide-react";
+import { BookOpen, CheckCircle2, Clapperboard, FileText, Search } from "lucide-react";
 
 interface NavbarProps {
   watchedCount: number;
@@ -19,6 +19,20 @@ export default function Navbar({
   onOpenSystemDocs,
 }: NavbarProps) {
   const progressPercentage = totalMovies > 0 ? Math.round((watchedCount / totalMovies) * 100) : 0;
+  const progressBucket = Math.min(100, Math.max(0, Math.round(progressPercentage / 10) * 10));
+  const progressWidthClass = {
+    0: "w-0",
+    10: "w-[10%]",
+    20: "w-[20%]",
+    30: "w-[30%]",
+    40: "w-[40%]",
+    50: "w-[50%]",
+    60: "w-[60%]",
+    70: "w-[70%]",
+    80: "w-[80%]",
+    90: "w-[90%]",
+    100: "w-full",
+  }[progressBucket as 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#e5e7eb] bg-white/95 backdrop-blur-xl">
@@ -38,6 +52,9 @@ export default function Navbar({
           <button onClick={onOpenRecap} className="rounded-full px-4 py-2 transition hover:text-neutral-950">
             Trailers
           </button>
+          <a href="#fan-edits" className="rounded-full px-4 py-2 transition hover:text-neutral-950">
+            Fan Edits
+          </a>
           <button onClick={onOpenSystemDocs} className="rounded-full px-4 py-2 transition hover:text-neutral-950">
             Docs
           </button>
@@ -56,13 +73,13 @@ export default function Navbar({
             {watchedCount}/{totalMovies} watched
           </div>
           <div className="hidden h-9 w-24 overflow-hidden rounded-full bg-neutral-100 sm:block">
-            <div className="h-full rounded-full bg-lime-300 transition-all" style={{ width: `${progressPercentage}%` }} />
+              <div className={`h-full rounded-full bg-lime-300 transition-all ${progressWidthClass}`} />
           </div>
           <button
             onClick={onOpenRecap}
             className="hidden items-center gap-2 rounded-full bg-lime-300 px-4 py-2.5 text-xs font-black text-neutral-950 transition hover:bg-lime-400 xl:flex"
           >
-            <Sparkles className="h-4 w-4" />
+            <Clapperboard className="h-4 w-4" />
             Story Recap
           </button>
           <button
@@ -72,10 +89,10 @@ export default function Navbar({
           >
             <FileText className="h-4 w-4" />
           </button>
-          <button className="inline-flex items-center gap-2 rounded-full border border-neutral-900 bg-white px-4 py-2.5 text-xs font-black text-neutral-950 transition hover:bg-neutral-950 hover:text-white">
+         {/* <button className="inline-flex items-center gap-2 rounded-full border border-neutral-900 bg-white px-4 py-2.5 text-xs font-black text-neutral-950 transition hover:bg-neutral-950 hover:text-white">
             <LogIn className="h-4 w-4" />
             Log in
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -84,6 +101,10 @@ export default function Navbar({
           <Clapperboard className="h-3.5 w-3.5" />
           Story Recap
         </button>
+        <a href="#fan-edits" className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] px-3 py-2">
+          <Clapperboard className="h-3.5 w-3.5" />
+          Fan Edits
+        </a>
         <button onClick={onOpenSystemDocs} className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] px-3 py-2">
           <BookOpen className="h-3.5 w-3.5" />
           System Docs

@@ -43,22 +43,7 @@ export default function MovieCard({
       onMouseEnter={onMouseEnter}
       className="group flex h-full flex-col rounded-lg border border-[#e5e7eb] bg-white p-4 transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
     >
-      <div className="grid grid-cols-3 gap-2 rounded-md border border-[#eeeeee] bg-neutral-50 p-3">
-        {previewIcons.map((Icon, index) => (
-          <div
-            key={`${movie.id}-${index}`}
-            className={`flex aspect-square items-center justify-center rounded-md border ${
-              index === 0
-                ? "border-lime-300 bg-lime-300 text-neutral-950"
-                : index === 4
-                  ? "border-neutral-900 bg-neutral-950 text-white"
-                  : "border-[#e5e7eb] bg-white text-neutral-600"
-            }`}
-          >
-            <Icon className={`h-5 w-5 ${index === 2 ? "fill-current opacity-80" : ""}`} strokeWidth={index === 5 ? 2.8 : 1.8} />
-          </div>
-        ))}
-      </div>
+      
 
       <div className="mt-4 flex items-start justify-between gap-3">
         <div>

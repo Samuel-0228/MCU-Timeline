@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { ArrowRight, Gem, RefreshCcw, Shield, Sparkles, Star } from "lucide-react";
+import { ArrowRight, RefreshCcw, Shield, Star } from "lucide-react";
 
 import captainPortrait from "../../data/capitain.png";
 import ironmanPortrait from "../../data/ironman.png";
@@ -19,13 +19,14 @@ const stoneOptions: Array<{
   name: string;
   accent: string;
   glow: string;
+  image: string;
 }> = [
-  { id: "space", name: "Space", accent: "from-sky-400 to-indigo-600", glow: "shadow-sky-500/30" },
-  { id: "mind", name: "Mind", accent: "from-amber-300 to-yellow-500", glow: "shadow-amber-500/30" },
-  { id: "reality", name: "Reality", accent: "from-fuchsia-400 to-rose-500", glow: "shadow-fuchsia-500/30" },
-  { id: "power", name: "Power", accent: "from-violet-500 to-indigo-700", glow: "shadow-violet-500/30" },
-  { id: "time", name: "Time", accent: "from-emerald-400 to-cyan-500", glow: "shadow-emerald-500/30" },
-  { id: "soul", name: "Soul", accent: "from-orange-400 to-amber-600", glow: "shadow-orange-500/30" },
+  { id: "space", name: "Space", accent: "from-sky-400 to-indigo-600", glow: "shadow-sky-500/30", image: "/space_stone.png" },
+  { id: "mind", name: "Mind", accent: "from-amber-300 to-yellow-500", glow: "shadow-amber-500/30", image: "/mind_stone.png" },
+  { id: "reality", name: "Reality", accent: "from-fuchsia-400 to-rose-500", glow: "shadow-fuchsia-500/30", image: "/reality_stone.png" },
+  { id: "power", name: "Power", accent: "from-violet-500 to-indigo-700", glow: "shadow-violet-500/30", image: "/power_stone.png" },
+  { id: "time", name: "Time", accent: "from-emerald-400 to-cyan-500", glow: "shadow-emerald-500/30", image: "/time_stone.png" },
+  { id: "soul", name: "Soul", accent: "from-orange-400 to-amber-600", glow: "shadow-orange-500/30", image: "/soul_stone.png" },
 ];
 
 export default function McuIntroGate({ onComplete }: McuIntroGateProps) {
@@ -124,7 +125,7 @@ export default function McuIntroGate({ onComplete }: McuIntroGateProps) {
             <div className="flex flex-1 flex-col justify-between rounded-3xl border border-[#e5e7eb] bg-white p-8 shadow-sm lg:p-12">
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-3 py-1.5 text-xs font-black uppercase tracking-widest text-lime-500">
-                  <Sparkles className="h-3.5 w-3.5" />
+                  <Star className="h-3.5 w-3.5" />
                   MCU landing sequence
                 </div>
                 <div className="max-w-xl space-y-4">
@@ -143,7 +144,7 @@ export default function McuIntroGate({ onComplete }: McuIntroGateProps) {
                   First visit gate
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] bg-neutral-50 px-4 py-2">
-                  <Gem className="h-4 w-4 text-lime-500" />
+                  <Star className="h-4 w-4 text-lime-500" />
                   Two fun choices
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] bg-neutral-50 px-4 py-2">
@@ -264,7 +265,9 @@ export default function McuIntroGate({ onComplete }: McuIntroGateProps) {
                         <p className="text-xs font-black uppercase tracking-widest text-white/90">Infinity Stone</p>
                         <h3 className="mt-2 text-2xl font-black text-white drop-shadow-sm">{stone.name}</h3>
                       </div>
-                      <Gem className="h-8 w-8 text-white drop-shadow-md" />
+                      <div className="relative h-14 w-14 overflow-hidden rounded-full shadow-lg border-2 border-white/20">
+                        <Image src={stone.image} alt={stone.name} fill className="object-cover" />
+                      </div>
                     </div>
                   </button>
                 );
@@ -278,7 +281,13 @@ export default function McuIntroGate({ onComplete }: McuIntroGateProps) {
                   {heroChoice ? heroMeta.title : "No side selected yet"}
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#e5e7eb] bg-neutral-50 px-4 py-2">
-                  <Gem className="h-4 w-4 text-lime-500" />
+                  {stoneChoice ? (
+                    <div className="relative h-5 w-5 overflow-hidden rounded-full shadow-sm">
+                      <Image src={stoneOptions.find((stone) => stone.id === stoneChoice)?.image || ""} alt="Stone" fill className="object-cover" />
+                    </div>
+                  ) : (
+                    <Star className="h-4 w-4 text-lime-500" />
+                  )}
                   {stoneChoice ? stoneOptions.find((stone) => stone.id === stoneChoice)?.name : "Pick a stone"}
                 </span>
               </div>

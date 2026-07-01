@@ -16,7 +16,6 @@ import {
   RotateCcw,
   Search,
   Shield,
-  Sparkles,
   Users,
 } from "lucide-react";
 import { mcuTimeline } from "../../data/mcuTimeline";
